@@ -1,0 +1,97 @@
+# ----------------------
+# OS / IDE files
+# ----------------------
+.vs/
+.vscode/
+.idea/
+*.swp
+*.swo
+*.DS_Store
+Thumbs.db
+
+# ----------------------
+# .NET / Visual Studio
+# ----------------------
+bin/
+obj/
+[Bb]uild/
+[Ll]og/
+TestResults/
+*.user
+*.rsuser
+*.suo
+*.cache
+*.pdb
+*.mdb
+*.opendb
+*.vshost.*
+*.userprefs
+
+# DotCover / ReSharper
+_ReSharper*/
+*.DotSettings.user
+
+# Rider
+.idea/
+
+# NuGet
+*.nupkg
+*.snupkg
+*.nuspec
+packages/
+.nuget/
+.project.json
+
+# ----------------------
+# Node.js
+# ----------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+.pnpm-debug.log
+.next/
+dist/
+
+# ----------------------
+# Docker
+# ----------------------
+*.pid
+*.seed
+*.pid.lock
+docker-compose.override.yml
+.env
+.env.*
+
+# ----------------------
+# Logs
+# ----------------------
+*.log
+logs/
+log/
+npm-debug.log*
+yarn-debug.log*
+lerna-debug.log*
+
+# ----------------------
+# Coverage
+# ----------------------
+coverage/
+lcov-report/
+*.lcov
+
+# ----------------------
+# Other
+# ----------------------
+*.tmp
+*.temp
+*.bak
+*.orig
+*.rej
+*.sublime-workspace
+
+# Ignore forge outputs if needed
+forged/

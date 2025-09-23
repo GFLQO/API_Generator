@@ -9,6 +9,7 @@ It includes all the layers (Domain, Application, Infrastructure, API) and a work
 
 ```powershell
 dotnet tool install --global ArchiForge
+```
 
 ## 📂 Structure du projet
 
@@ -31,11 +32,17 @@ forged/
 ## ⚡ Features
 
 ✅ Clean Architecture / DDD structure (Domain, Application, Infrastructure, API)
+
 ✅ CQRS-ready with MediatR + AutoMapper
+
 ✅ EF Core (Postgres/SQL Server/…) with a configured DbContext
+
 ✅ Example Todo Entity + Repository + CRUD Controller
+
 ✅ Swagger enabled for API documentation
+
 ✅ Global error-handling middleware
+
 ✅ Docker Compose (Postgres + pgAdmin preconfigured)
 
 ---
@@ -51,5 +58,5 @@ forged/
 ## 🚀 Usage
 
 ```powershell
-archiforge new MyApi
+archiforge new MyForgedApi
 ```
