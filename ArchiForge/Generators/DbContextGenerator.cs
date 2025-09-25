@@ -1,30 +1,27 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System.Linq;
+using System.IO;
+using ArchiForge.Utils;
 
 namespace ArchiForge.Generators
 {
     public static class DbContextGenerator
     {
-        public static void Generate(string projectRoot, string projectName, string[] entities)
+        public static void Generate(string root, string project, string[] entities, string ddd)
         {
-            var dbSets = string.Join("\n",
-                entities.Select(e => $"        public DbSet<{e}> {e}s {{ get; set; }}"));
-
+            var sets = string.Join("\n", entities.Select(x => $"        public Microsoft.EntityFrameworkCore.DbSet<{x}> {x}s {{ get; set; }}"));
             var code = $@"
 using Microsoft.EntityFrameworkCore;
-using {projectName}.Domain.Entities;
+using {project}.Domain.Entities;
 
-namespace {projectName}.Infrastructure.Persistence
+namespace {project}.Infrastructure.Persistence
 {{
     public class AppDbContext : DbContext
     {{
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {{ }}
-
-{dbSets}
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {{}}
+{sets}
     }}
 }}";
-            var file = Path.Combine(projectRoot, $"{projectName}.Infrastructure", "Persistence", "AppDbContext.cs");
-            File.WriteAllText(file, code);
+            FileHelper.WriteAllText(Path.Combine(root, $"{project}.Infrastructure", "Persistence", "AppDbContext.cs"), code);
         }
     }
 }

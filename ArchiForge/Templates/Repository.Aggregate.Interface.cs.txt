@@ -1,0 +1,22 @@
+﻿using System.Threading.Tasks;
+using System.Collections.Generic;
+using {{ProjectName}}.Domain.Entities;
+using Ardalis.Specification;
+
+namespace {{ProjectName}}.Application.Interfaces
+{
+    public interface I{{EntityName}}Repository
+    {
+        Task<{{EntityName}}> GetByIdAsync({{IdType}} id);
+
+        Task<IEnumerable<{{EntityName}}>> GetAllAsync();
+
+        Task AddAsync({{EntityName}} aggregate);
+
+        Task UpdateAsync({{EntityName}} aggregate);
+
+        Task DeleteAsync({{IdType}} id);
+
+        Task<IEnumerable<{{EntityName}}>> FindBySpecificationAsync(ISpecification<{{EntityName}}> specification);
+    }
+}

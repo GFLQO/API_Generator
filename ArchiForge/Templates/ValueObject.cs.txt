@@ -1,0 +1,11 @@
+﻿namespace {{ProjectName}}.Domain.ValueObjects
+{
+    public class {{ValueObjectName}}
+    {
+        public string Value { get; }
+        private {{ValueObjectName}}(string value) { Value = value; }
+        public static {{ValueObjectName}} Create(string value) { return new {{ValueObjectName}}(value); }
+        public override bool Equals(object obj) { return obj is {{ValueObjectName}} other && other.Value == Value; }
+        public override int GetHashCode() { return Value.GetHashCode(); }
+    }
+}

@@ -1,0 +1,57 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using {{ProjectName}}.Domain.Entities;
+using {{ProjectName}}.Application.Interfaces;
+using System.Threading.Tasks;
+
+namespace {{ProjectName}}.Api.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class {{EntityName}}Controller : ControllerBase
+    {
+        private readonly I{{EntityName}}Repository _repository;
+
+        public {{EntityName}}Controller(I{{EntityName}}Repository repository)
+        {
+            _repository = repository;
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById({{IdType}} id)
+        {
+            var entity = await _repository.GetByIdAsync(id);
+            return entity == null ? NotFound() : Ok(entity);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var items = await _repository.GetAllAsync();
+            return Ok(items);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create({{EntityName}} entity)
+        {
+            await _repository.AddAsync(entity);
+            return CreatedAtAction(nameof(GetById), new { id = entity.Id }, entity);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update({{IdType}} id, {{EntityName}} entity)
+        {
+            if (!id.Equals(entity.Id))
+                return BadRequest();
+
+            await _repository.UpdateAsync(entity);
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete({{IdType}} id)
+        {
+            await _repository.DeleteAsync(id);
+            return NoContent();
+        }
+    }
+}

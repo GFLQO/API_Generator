@@ -1,0 +1,15 @@
+﻿using {{ProjectName}}.Domain.Entities;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace {{ProjectName}}.Application.Interfaces
+{
+    public interface I{{EntityName}}Repository
+    {
+        Task<{{EntityName}}> GetByIdAsync({{IdType}} id);
+        Task<IEnumerable<{{EntityName}}>> GetAllAsync();
+        Task AddAsync({{EntityName}} entity);
+        Task UpdateAsync({{EntityName}} entity);
+        Task DeleteAsync({{IdType}} id);
+    }
+}

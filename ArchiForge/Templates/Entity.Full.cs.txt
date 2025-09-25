@@ -1,0 +1,9 @@
+﻿namespace {{ProjectName}}.Domain.Entities
+{
+    public class {{EntityName}}
+    {
+        {{IdDeclaration}}
+        public string Name { get; private set; } = string.Empty;
+        public void Rename(string name) { Name = name; }
+    }
+}

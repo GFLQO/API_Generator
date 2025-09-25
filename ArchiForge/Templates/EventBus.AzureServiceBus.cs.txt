@@ -1,0 +1,12 @@
+﻿using Azure.Messaging.ServiceBus;
+using System.Threading.Tasks;
+
+namespace {{ProjectName}}.Infrastructure.EventBus
+{
+    public class AzureServiceBusPublisher
+    {
+        private readonly ServiceBusClient _client;
+        public AzureServiceBusPublisher(string connectionString) { _client = new ServiceBusClient(connectionString); }
+        public Task Publish(string queue, string message) { return _client.CreateSender(queue).SendMessageAsync(new ServiceBusMessage(message)); }
+    }
+}

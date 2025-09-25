@@ -1,0 +1,38 @@
+﻿using {{ProjectName}}.Application.Interfaces;
+using {{ProjectName}}.Application.Specifications;
+using {{ProjectName}}.Domain.Entities;
+using {{ProjectName}}.Infrastructure.Specifications;
+using MongoDB.Driver;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace {{ProjectName}}.Infrastructure.Repositories
+{
+    public class {{EntityName}}Repository : I{{EntityName}}Repository
+    {
+        private readonly IMongoCollection<{{EntityName}}> _c;
+
+        public {{EntityName}}Repository(IMongoDatabase db)
+        {
+            _c = db.GetCollection<{{EntityName}}>("{{EntityNameLower}}s");
+        }
+
+        public async Task<{{EntityName}}?> GetByIdAsync({{IdType}} id)
+            => await _c.Find(x => x.Id == id).FirstOrDefaultAsync();
+
+        public async Task<IEnumerable<{{EntityName}}>> GetAllAsync()
+            => await _c.Find(_ => true).ToListAsync();
+
+        public async Task<IEnumerable<{{EntityName}}>> FindBySpecificationAsync(ISpecification<{{EntityName}}> specification)
+            => await MongoSpecificationEvaluator.GetQuery(_c, specification).ToListAsync();
+
+        public async Task AddAsync({{EntityName}} entity)
+            => await _c.InsertOneAsync(entity);
+
+        public async Task UpdateAsync({{EntityName}} entity)
+            => await _c.ReplaceOneAsync(x => x.Id == entity.Id, entity);
+
+        public async Task DeleteAsync({{IdType}} id)
+            => await _c.DeleteOneAsync(x => x.Id == id);
+    }
+}

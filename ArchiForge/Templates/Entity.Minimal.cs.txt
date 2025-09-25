@@ -1,0 +1,8 @@
+﻿namespace {{ProjectName}}.Domain.Entities
+{
+    public class {{EntityName}}
+    {
+        {{IdDeclaration}}
+        public string Name { get; set; } = string.Empty;
+    }
+}

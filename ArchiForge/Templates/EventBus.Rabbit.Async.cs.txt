@@ -1,0 +1,32 @@
+﻿using RabbitMQ.Client;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace {{ProjectName}}.Infrastructure.EventBus
+{
+    public class RabbitMqPublisher : System.IAsyncDisposable
+    {
+        private readonly IConnection _connection;
+        private readonly IChannel _channel;
+
+        public RabbitMqPublisher(string hostName = "localhost")
+        {
+            var factory = new ConnectionFactory { HostName = hostName };
+            _connection = factory.CreateConnectionAsync().GetAwaiter().GetResult();
+            _channel = _connection.CreateChannelAsync().GetAwaiter().GetResult();
+        }
+
+        public async Task PublishAsync(string queue, string message)
+        {
+            await _channel.QueueDeclareAsync(queue, false, false, false);
+            var body = Encoding.UTF8.GetBytes(message);
+            await _channel.BasicPublishAsync("", queue, false, body);
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            if (_channel != null) await _channel.CloseAsync();
+            _connection?.Dispose();
+        }
+    }
+}

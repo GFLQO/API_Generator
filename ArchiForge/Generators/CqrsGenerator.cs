@@ -1,38 +1,70 @@
 ﻿using System.IO;
+using ArchiForge.Utils;
 
 namespace ArchiForge.Generators
 {
     public static class CqrsGenerator
     {
-        public static void Generate(string projectRoot, string projectName, string[] entities)
+        public static void Generate(string root, string project, string[] entities, string ddd)
         {
-            foreach (var entity in entities)
+            foreach (var e in entities)
             {
-                var commandCode = $@"
+                var cmd = $@"
 using MediatR;
 
-namespace {projectName}.Application.Commands
+namespace {project}.Application.Commands
 {{
-    public record Create{entity}Command(string Name) : IRequest<int>;
+    public record Create{e}Command(string Name) : IRequest<string>;
 }}";
-                File.WriteAllText(Path.Combine(projectRoot, $"{projectName}.Application", "Commands", $"Create{entity}Command.cs"), commandCode);
+                FileHelper.WriteAllText(Path.Combine(root, $"{project}.Application", "Commands", $"Create{e}Command.cs"), cmd);
 
-                var handlerCode = $@"
+                var h = ddd == "Full"
+                    ? $@"
 using MediatR;
-using {projectName}.Domain.Entities;
+using {project}.Application.Interfaces;
+using {project}.Application.Commands;
+using {project}.Domain.Entities;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace {projectName}.Application.Handlers
+namespace {project}.Application.Handlers
 {{
-    public class Create{entity}Handler : IRequestHandler<Create{entity}Command, int>
+    public class Create{e}Handler : IRequestHandler<Create{e}Command, string>
     {{
-        public Task<int> Handle(Create{entity}Command request, CancellationToken cancellationToken)
+        private readonly I{e}Repository _repo;
+        public Create{e}Handler(I{e}Repository repo) => _repo = repo;
+        public async Task<string> Handle(Create{e}Command request, CancellationToken ct)
         {{
-            // TODO: persist entity
-            return Task.FromResult(1);
+            var entity = new {e}();
+            await _repo.AddAsync(entity);
+            return entity.Id.ToString();
+        }}
+    }}
+}}"
+                    :
+                      $@"
+using MediatR;
+using {project}.Application.Interfaces;
+using {project}.Application.Commands;
+using {project}.Domain.Entities;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace {project}.Application.Handlers
+{{
+    public class Create{e}Handler : IRequestHandler<Create{e}Command, string>
+    {{
+        private readonly I{e}Repository _repo;
+        public Create{e}Handler(I{e}Repository repo) => _repo = repo;
+        public async Task<string> Handle(Create{e}Command request, CancellationToken ct)
+        {{
+            var entity = new {e}();
+            await _repo.AddAsync(entity);
+            return entity.Id.ToString();
         }}
     }}
 }}";
-                File.WriteAllText(Path.Combine(projectRoot, $"{projectName}.Application", "Handlers", $"Create{entity}Handler.cs"), handlerCode);
+                FileHelper.WriteAllText(Path.Combine(root, $"{project}.Application", "Handlers", $"Create{e}Handler.cs"), h);
             }
         }
     }

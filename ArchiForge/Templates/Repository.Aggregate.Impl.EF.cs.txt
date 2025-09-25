@@ -1,0 +1,29 @@
+﻿using {{ProjectName}}.Application.Interfaces;
+using {{ProjectName}}.Domain.Entities;
+using {{ProjectName}}.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+
+namespace {{ProjectName}}.Infrastructure.Repositories
+{
+    public class {{EntityName}}Repository : I{{EntityName}}Repository
+    {
+        private readonly AppDbContext _context;
+        public {{EntityName}}Repository(AppDbContext context) { _context = context; }
+
+        public async Task<{{EntityName}}?> GetByIdAsync({{IdType}} id)
+            => await _context.Set<{{EntityName}}>().FirstOrDefaultAsync(x => x.Id.Equals(id));
+
+        public async Task AddAsync({{EntityName}} aggregate)
+        {
+            await _context.Set<{{EntityName}}>().AddAsync(aggregate);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync({{EntityName}} aggregate)
+        {
+            _context.Set<{{EntityName}}>().Update(aggregate);
+            await _context.SaveChangesAsync();
+        }
+    }
+}

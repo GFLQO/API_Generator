@@ -14,28 +14,42 @@ namespace ArchiForge.Generators
                 ShellRunner.Run($"dotnet add {name}.Infrastructure/{name}.Infrastructure.csproj package RabbitMQ.Client", root);
                 var code = $@"
 using RabbitMQ.Client;
+using RabbitMQ.Client.Exceptions;
 using System.Text;
 
-namespace {name}.Infrastructure.EventBus
+namespace MyApp.Infrastructure.EventBus
 {{
-    public class RabbitMqPublisher
+    public class RabbitMqPublisher : IAsyncDisposable
     {{
         private readonly IConnection _connection;
+        private readonly IChannel _channel;
+
         public RabbitMqPublisher(string hostName = ""localhost"")
         {{
-            var factory = new ConnectionFactory() {{ HostName = hostName }};
-            _connection = factory.CreateConnection();
-        }}
-        public void Publish(string queue, string message)
+                    var factory = new ConnectionFactory() {{ HostName = hostName }};
+
+                    // Crée la connexion async
+                    _connection = factory.CreateConnectionAsync().GetAwaiter().GetResult();
+
+                    // Crée un channel async
+                    _channel = _connection.CreateChannelAsync().GetAwaiter().GetResult();
+                }}
+
+        public async Task PublishAsync(string queue, string message)
         {{
-            using var channel = _connection.CreateModel();
-            channel.QueueDeclare(queue, durable: false, exclusive: false, autoDelete: false);
+            await _channel.QueueDeclareAsync(queue, durable: false, exclusive: false, autoDelete: false);
             var body = Encoding.UTF8.GetBytes(message);
-            channel.BasicPublish("""", queue, null, body);
+            await _channel.BasicPublishAsync(exchange: "", routingKey: queue, mandatory: false, body: body);
+        }}
+
+        public async ValueTask DisposeAsync()
+        {{
+            if (_channel != null) await _channel.CloseAsync();
+            _connection?.Dispose();
         }}
     }}
 }}";
-                var path = Path.Combine(root, $"{name}.Infrastructure", "EventBus", "RabbitMqPublisher.cs");
+var path = Path.Combine(root, $"{name}.Infrastructure", "EventBus", "RabbitMqPublisher.cs");
                 FileHelper.WriteAllText(path, code);
             }
 
